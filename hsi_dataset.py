@@ -17,10 +17,9 @@ from sklearn import model_selection
 class HsiDataset(Dataset):
     def __init__(self, is_train=True):
         self.is_train = is_train
-        self.csv_file_location = "data/out/hsi_modified.csv"
+        self.csv_file_location = "data/out/hsi_removed.csv"
         self.work_csv_file_location = "data/out/hsi_work.csv"
-        self.scalers = {}
-        self.bands = list(range(1, 6))
+        self.scaler = None
         self.df = pd.read_csv(self.csv_file_location)
         train, test = model_selection.train_test_split(self.df, test_size=0.2)
         self.df = train
@@ -28,28 +27,29 @@ class HsiDataset(Dataset):
             self.df = test
 
         self.df = self._preprocess(self.df)
-        self.df.to_csv(self.work_csv_file_location)
+        self.df.to_csv(self.work_csv_file_location, index=False)
 
     def _preprocess(self, df):
         self.__scale__(df)
         return df
 
     def __scale__(self, df):
-        self.__scale_col__(df, "soc")
+        for col in df.columns[1:]:
+            df = self.__scale_col__(df, col)
         return df
 
     def __scale_col__(self, df, col):
-        return df
         x = df[[col]].values.astype(float)
-        self.scalers[col] = MinMaxScaler()
-        x_scaled = self.scalers[col].fit_transform(x)
+        scaler = MinMaxScaler()
+        x_scaled = scaler.fit_transform(x)
         df[col] = x_scaled
+        if col == "soc":
+            self.scaler = scaler
         return df
 
-    def unscale(self, values, col):
-        return values
+    def unscale(self, values):
         values = [[i] for i in values]
-        values = self.scalers[col].inverse_transform(values)
+        values = self.scaler.inverse_transform(values)
         values = [i[0] for i in values]
         return values
 
@@ -64,10 +64,10 @@ class HsiDataset(Dataset):
 
 if __name__ == "__main__":
     cid = HsiDataset()
-    dataloader = DataLoader(cid, batch_size=1, shuffle=True)
-    for images, elevation, soc in dataloader:
+    dataloader = DataLoader(cid, batch_size=10, shuffle=True)
+    for images, soc in dataloader:
+        print(images.shape)
         print(images)
-        print(elevation)
         print(soc)
         exit(0)
 

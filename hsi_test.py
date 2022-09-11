@@ -33,11 +33,11 @@ def test(device):
         loss_cum = loss_cum + loss.item()
 
         for i in range(y_hat.shape[0]):
-            gt = cid.unscale([y[i].item()],"soc")
-            hat= cid.unscale([y_hat[i].item()],"soc")
-            actual = f"{gt[0]:.1f}".ljust(20)
-            predicted = f"{hat[0]:.1f}".ljust(20)
-            #print(f"{actual}{predicted}")
+            # gt = cid.unscale([y[i].item()])
+            # hat= cid.unscale([y_hat[i].item()])
+            # actual = f"{gt[0]:.1f}".ljust(20)
+            # predicted = f"{hat[0]:.1f}".ljust(20)
+            # print(f"{actual}{predicted}")
             ys.append(y[i].item())
             yhats.append(y_hat[i].item())
 
