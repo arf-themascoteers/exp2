@@ -60,6 +60,7 @@ class HsiDataset(Dataset):
     def __getitem__(self, idx):
         soc = self.df.iloc[idx]["soc"]
         reflectance = torch.tensor(self.df.iloc[idx,2:].values, dtype=torch.float32)
+        reflectance = reflectance.reshape(1,-1)
         return reflectance, torch.tensor(soc, dtype=torch.float32)
 
 

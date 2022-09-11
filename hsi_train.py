@@ -5,12 +5,13 @@ import torchvision
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from hsi_machine import HsiMachine
+from hsi_conv1d import HsiConv1d
 
 def train(device):
     batch_size = 5000
     cid = HsiDataset(is_train=True)
     dataloader = DataLoader(cid, batch_size=batch_size, shuffle=True)
-    model = HsiMachine()
+    model = HsiConv1d()
     model.train()
     model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-5)
