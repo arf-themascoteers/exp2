@@ -30,21 +30,22 @@ class HsiDataset(Dataset):
         self.df.to_csv(self.work_csv_file_location, index=False)
 
     def _preprocess(self, df):
-        self.__scale__(df)
+        df = self.__scale__(df)
         return df
 
     def __scale__(self, df):
-        for col in df.columns[1:]:
-            df = self.__scale_col__(df, col)
-        return df
-
-    def __scale_col__(self, df, col):
-        x = df[[col]].values.astype(float)
+        # for col in df.columns[1:]:
+        #     df = self.__scale_col__(df, col)
+        x = df[df.columns[2:]].values.astype(float)
         scaler = MinMaxScaler()
         x_scaled = scaler.fit_transform(x)
-        df[col] = x_scaled
-        if col == "soc":
-            self.scaler = scaler
+        df[df.columns[2:]] = x_scaled
+
+        x = df[["soc"]].values.astype(float)
+        self.scaler = MinMaxScaler()
+        x_scaled = self.scaler.fit_transform(x)
+        df["soc"] = x_scaled
+
         return df
 
     def unscale(self, values):

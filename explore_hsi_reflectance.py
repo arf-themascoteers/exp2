@@ -6,7 +6,7 @@ from PIL import Image
 import numpy
 import pandas as pd
 
-csv_file_location = "data/out/hsi_removed.csv"
+csv_file_location = "data/out/hsi_work.csv"
 
 
 def explore_sat():

@@ -5,7 +5,7 @@ import sklearn
 
 
 def test(device):
-    batch_size = 10
+    batch_size = 1000
     cid = HsiDataset(is_train=False)
     dataloader = DataLoader(cid, batch_size=batch_size, shuffle=True)
     criterion = torch.nn.MSELoss(reduction='mean')
@@ -33,11 +33,11 @@ def test(device):
         loss_cum = loss_cum + loss.item()
 
         for i in range(y_hat.shape[0]):
-            # gt = cid.unscale([y[i].item()])
-            # hat= cid.unscale([y_hat[i].item()])
-            # actual = f"{gt[0]:.1f}".ljust(20)
-            # predicted = f"{hat[0]:.1f}".ljust(20)
-            # print(f"{actual}{predicted}")
+            gt = cid.unscale([y[i].item()])
+            hat= cid.unscale([y_hat[i].item()])
+            actual = f"{gt[0]:.1f}".ljust(20)
+            predicted = f"{hat[0]:.1f}".ljust(20)
+            print(f"{actual}{predicted}")
             ys.append(y[i].item())
             yhats.append(y_hat[i].item())
 
