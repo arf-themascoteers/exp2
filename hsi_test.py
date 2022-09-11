@@ -1,6 +1,7 @@
 import torch
 from hsi_dataset import HsiDataset
 from torch.utils.data import DataLoader
+import sklearn
 
 
 def test(device):
@@ -17,6 +18,10 @@ def test(device):
     loss_cum = 0
     itr = 0
     results = []
+
+    ys = []
+    yhats = []
+
     print(f"Actual SOC\t\t\tPredicted SOC")
     for (x, y) in dataloader:
         x = x.to(device)
@@ -32,10 +37,12 @@ def test(device):
             hat= cid.unscale([y_hat[i].item()],"soc")
             actual = f"{gt[0]:.1f}".ljust(20)
             predicted = f"{hat[0]:.1f}".ljust(20)
-            print(f"{actual}{predicted}")
+            #print(f"{actual}{predicted}")
+            ys.append(y[i].item())
+            yhats.append(y_hat[i].item())
 
-    loss_cum = loss_cum / itr
-    print(f"Loss {loss_cum:.2f}")
+    r2 = sklearn.metrics.r2_score(ys, yhats)
+    print(f"R-squared {r2}")
 
 
 if __name__ == "__main__":

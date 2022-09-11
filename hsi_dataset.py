@@ -17,10 +17,10 @@ from sklearn import model_selection
 class HsiDataset(Dataset):
     def __init__(self, is_train=True):
         self.is_train = is_train
-        self.csv_file_location = "data/out/hsi_csv.csv"
+        self.csv_file_location = "data/out/hsi_modified.csv"
         self.work_csv_file_location = "data/out/hsi_work.csv"
         self.scalers = {}
-        self.bands = list(range(1, 243))
+        self.bands = list(range(1, 6))
         self.df = pd.read_csv(self.csv_file_location)
         train, test = model_selection.train_test_split(self.df, test_size=0.2)
         self.df = train
@@ -39,6 +39,7 @@ class HsiDataset(Dataset):
         return df
 
     def __scale_col__(self, df, col):
+        return df
         x = df[[col]].values.astype(float)
         self.scalers[col] = MinMaxScaler()
         x_scaled = self.scalers[col].fit_transform(x)
@@ -46,6 +47,7 @@ class HsiDataset(Dataset):
         return df
 
     def unscale(self, values, col):
+        return values
         values = [[i] for i in values]
         values = self.scalers[col].inverse_transform(values)
         values = [i[0] for i in values]
